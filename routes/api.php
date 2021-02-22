@@ -20,27 +20,36 @@ use App\Models\Message;
 |
 */
 
-Route::post('login', [AuthController::class, 'login']);
+Route::post('/auth', [AuthController::class, 'auth']);
 
-Route::post('user', [UserController::class, 'store']);
+Route::post('/user', [UserController::class, 'store']);
 
 Route::middleware('auth:sanctum')->group(function () {
-    Route::get('user', [UserController::class, 'index']);
-    Route::patch('user', [UserController::class, 'update']);
-    Route::get('users', [UserController::class, 'list']);
-    Route::get('users/{id}', [UserController::class, 'show']);
+    Route::prefix('user')->group(function () {
+        Route::get('/', [UserController::class, 'index']);
+        Route::get('/{id}', [UserController::class, 'show']);
+        Route::patch('/', [UserController::class, 'update']);
+    });
+
+    Route::get('/users', [UserController::class, 'list']);
 
     Route::get('posts', [PostController::class, 'index']);
-    Route::post('post', [PostController::class, 'store']);
-    Route::patch('post/{id}', [PostController::class, 'update']);
-    Route::delete('post/{id}', [PostController::class, 'destroy']);
-    Route::post('post/{id}/like-toggle', [PostController::class, 'like']);
-    Route::get('post/{id}/liked', [PostController::class, 'liked']);
+
+    Route::prefix('post')->group(function () {
+        Route::post('/', [PostController::class, 'store']);
+        Route::patch('/{id}', [PostController::class, 'update']);
+        Route::delete('/{id}', [PostController::class, 'destroy']);
+        Route::post('/{id}/like-toggle', [PostController::class, 'like']);
+        Route::get('/{id}/liked', [PostController::class, 'liked']);
+    });
 
     Route::get('messages', [MessageController::class, 'index']);
-    Route::get('message/{id}', [MessageController::class, 'show']);
-    Route::post('message', [MessageController::class, 'store']);
-    Route::patch('message/{id}', [MessageController::class, 'update']);
-    Route::delete('message/{id}', [MessageController::class, 'destroy']);
-    Route::post('message/{id}/view', [MessageController::class, 'view']);
+
+    Route::prefix('message')->group(function () {
+        Route::get('/{id}', [MessageController::class, 'show']);
+        Route::post('', [MessageController::class, 'store']);
+        Route::patch('/{id}', [MessageController::class, 'update']);
+        Route::delete('/{id}', [MessageController::class, 'destroy']);
+        Route::post('/{id}/view', [MessageController::class, 'view']);
+    });
 });

@@ -12,7 +12,7 @@ use App\Models\User;
 
 class AuthController extends Controller
 {
-    public function login(Request $request)
+    public function auth(Request $request)
     {
         $request->validate([
             'email' => 'required|email',
